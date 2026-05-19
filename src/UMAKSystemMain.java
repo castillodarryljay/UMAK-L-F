@@ -151,10 +151,9 @@ public class UMAKSystemMain extends JFrame {
             
             navPanel.add(createNavBtn("📊   Statistics", "admin_stats"));
             navPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-            navPanel.add(createNavBtn("⚖️   Manage Claims", "admin_status"));
+            navPanel.add(createNavBtn("⚖️   Manage Claims & Reports", "admin_status"));
             navPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-            navPanel.add(createNavBtn("📦   Inventory", "admin_inventory"));
-            navPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+            navPanel.add(createNavBtn("📦   Inventory", "admin_inventory"));            navPanel.add(Box.createRigidArea(new Dimension(0, 8)));
             navPanel.add(createNavBtn("🗄️   Archived Items", "admin_archive"));
             navPanel.add(Box.createRigidArea(new Dimension(0, 8)));
             navPanel.add(createNavBtn("👥   User Status", "admin_sessions"));
@@ -942,7 +941,7 @@ private JPanel createPrivacySecurity() {
         panel.setBackground(SURFACE);
         panel.setBorder(new EmptyBorder(40, 50, 40, 50));
 
-        JLabel title = new JLabel("Manage Claims");
+        JLabel title = new JLabel("Manage Claims & Reports");
         title.setFont(new Font("SansSerif", Font.BOLD, 32));
         title.setBorder(new EmptyBorder(0, 0, 20, 0));
         panel.add(title, BorderLayout.NORTH);
@@ -951,7 +950,7 @@ private JPanel createPrivacySecurity() {
         tableBox.setBackground(CARD_BG);
         tableBox.setBorder(new javax.swing.border.LineBorder(OUTLINE, 1));
         
-        String[] columns = {"ID", "Item", "Claimant", "Justification", "Status", "Proof", "item_id"};
+        String[] columns = {"ID", "Item", "Claimant", "Justification", "Status", "Proof", "item_id", "actual_proof_path"};
         claimsModel = new DefaultTableModel(columns, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -962,6 +961,8 @@ private JPanel createPrivacySecurity() {
         claimsTable.getColumnModel().getColumn(0).setMaxWidth(0);
         claimsTable.getColumnModel().getColumn(6).setMinWidth(0);
         claimsTable.getColumnModel().getColumn(6).setMaxWidth(0);
+        claimsTable.getColumnModel().getColumn(7).setMinWidth(0);
+        claimsTable.getColumnModel().getColumn(7).setMaxWidth(0);
 
         // Add action for Proof column
         claimsTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -969,7 +970,7 @@ private JPanel createPrivacySecurity() {
                 int row = claimsTable.getSelectedRow();
                 int col = claimsTable.getSelectedColumn();
                 if (col == 5) { // Proof column
-                    String proofPath = (String) claimsModel.getValueAt(row, 5);
+                    String proofPath = (String) claimsModel.getValueAt(row, 7); // Use hidden actual_proof_path column
                     String justification = (String) claimsModel.getValueAt(row, 3);
                     String claimant = (String) claimsModel.getValueAt(row, 2);
                     String item = (String) claimsModel.getValueAt(row, 1);
@@ -1006,22 +1007,27 @@ private JPanel createPrivacySecurity() {
     private void refreshAdminClaimsTable() {
         if (claimsModel == null) return;
         claimsModel.setRowCount(0);
-        String sql = "SELECT CONCAT('C:', c.claim_id), i.item_name, c.student_name, c.justification, c.status, c.image_proof, c.item_id " +
+        String sql = "SELECT CONCAT('C:', c.claim_id), i.item_name, c.student_name, c.justification, c.status, c.image_proof, c.item_id, i.item_type " +
                      "FROM claims c JOIN items i ON c.item_id = i.id " +
                      "WHERE c.status = 'Pending' " +
                      "ORDER BY c.claim_date DESC";
 
         try (Connection conn = DBConnection.connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
+                String itemName = rs.getString(2);
+                String itemType = rs.getString(8);
+                String indicator = itemType.equalsIgnoreCase("Lost") ? "[REPORT] " : "[CLAIM] ";
                 String proof = rs.getString(6);
+                
                 claimsModel.addRow(new Object[]{
                     rs.getString(1), 
-                    rs.getString(2), 
+                    indicator + itemName, 
                     rs.getString(3), 
                     rs.getString(4), 
                     rs.getString(5),
-                    (proof == null || proof.isEmpty()) ? "No Proof" : proof,
-                    rs.getInt(7)
+                    (proof == null || proof.isEmpty()) ? "No Proof" : "Show Proof",
+                    rs.getInt(7),
+                    proof // hidden actual_proof_path column
                 });
             }
         } catch (Exception e) { e.printStackTrace(); }
