@@ -607,7 +607,7 @@ class ClaimModal extends JDialog {
                     ps.setString(7, "Pending");
                     ps.executeUpdate();
                     
-                    JOptionPane.showMessageDialog(this, "Claim filed successfully!");
+                    JOptionPane.showMessageDialog(this, "Report filed successfully!");
                     if (dashboard != null) dashboard.refreshData();
                     dispose();
                 }
