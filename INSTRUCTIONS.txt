@@ -1,0 +1,60 @@
+UMak Lost & Found - Java Program Setup Guide
+=============================================
+
+Step 1: Install & Start XAMPP
+-----------------------------
+1. Download and install XAMPP (Windows version).
+2. Open the XAMPP Control Panel.
+3. Click "Start" next to Apache and MySQL.
+
+Step 2: Set up the Database
+---------------------------
+1. Open the Command Prompt (cmd).
+2. Type this command to log in to MySQL:
+   C:\xampp\mysql\bin\mysql.exe -u root
+3. Execute the following commands (or import sql/schema.sql):
+
+   CREATE DATABASE IF NOT EXISTS UMAK_LostFound;
+   USE UMAK_LostFound;
+
+   -- Note: The application automatically performs schema migrations on startup.
+   -- It will handle table creation, column updates, and password encryption.
+
+Step 3: Run the Program
+-----------------------
+1. Open the project in your preferred Java IDE (VS Code, IntelliJ, or Eclipse).
+2. Run `LoginFrame.java` to start the application.
+3. Login with the default admin account:
+   - Username: admin
+   - Password: admin123
+
+Key System Features & Functionality
+-------------------------------------
+1. UI & Navigation:
+   - Centered Sidebar: Modern navigation with dual-logo branding.
+   - Dynamic Dashboard: Real-time browsing of Lost and Found items with search/filter.
+   - Synchronized Highlighting: Sidebar buttons update automatically based on your current view.
+
+2. Interaction Logic:
+   - Contextual Action Buttons: 
+     * Found Items -> "File a claim" (to prove ownership).
+     * Lost Reports -> "File a report" (to notify you found it).
+   - Smart Claim Management: "Manage" button in item details takes Admin directly to the claims list and highlights related entries.
+   - Single-Click Activation: Dashboard items open with a single mouse press for faster browsing.
+
+3. Security & Stability:
+   - AES-GCM Encryption: All user passwords are encrypted automatically upon storage or migration.
+   - Session Tracking: Real-time "Online/Offline" status tracking for all users.
+   - Resource Management: "Try-with-resources" implementation ensures stable database connections.
+
+4. Administrative Control:
+   - Unified Claim Viewer: Detailed modal for reviewing ownership proof and images.
+   - Statistics Dashboard: Real-time counts of Lost, Found, and Resolved items.
+   - Auto-Archive: Processed items are automatically hidden after 30 days to keep the dashboard clean.
+   - Full Inventory Control: Archive, restore, or permanently delete records with immediate UI reflection.
+
+Troubleshooting:
+-----------------
+- Database Error: Ensure XAMPP MySQL is active and the `root` user has no password (default).
+- Images Missing: Verify paths or check the `sample image/` folder for system logos.
+- Startup Issues: Ensure Java 8 or higher is installed and the `mysql-connector.jar` is in the classpath.
