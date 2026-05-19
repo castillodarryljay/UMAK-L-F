@@ -33,7 +33,8 @@ public class UMAKSystemMain extends JFrame {
 
     public UMAKSystemMain() {
         setTitle("UMAK Lost & Found Inventory - Portal");
-        setSize(1350, 900);
+        setMinimumSize(new Dimension(1000, 700));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -346,10 +347,10 @@ public class UMAKSystemMain extends JFrame {
         JPanel card = new JPanel(new GridBagLayout());
         card.setBackground(CARD_BG); 
         card.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
-        card.setPreferredSize(new Dimension(800, 850));
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         JLabel title = new JLabel("Report Item");
         title.setFont(new Font("SansSerif", Font.BOLD, 32));
@@ -396,9 +397,10 @@ public class UMAKSystemMain extends JFrame {
         descArea.setLineWrap(true); descArea.setWrapStyleWord(true);
         descArea.setBorder(BorderFactory.createLineBorder(OUTLINE));
         gbc.gridy = 9; gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 0.2;
         card.add(new JScrollPane(descArea), gbc);
 
-        gbc.gridy = 10; gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = 10; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weighty = 0;
         gbc.insets = new Insets(20, 0, 10, 0);
         card.add(new JLabel("Upload Photo") {{ setForeground(Color.GRAY); }}, gbc);
 
@@ -476,7 +478,17 @@ public class UMAKSystemMain extends JFrame {
         gbc.insets = new Insets(30, 0, 0, 0);
         card.add(submitBtn, gbc);
 
-        wrapper.add(card); return wrapper;
+        GridBagConstraints wrapperGbc = new GridBagConstraints();
+        wrapperGbc.insets = new Insets(20, 20, 20, 20);
+        wrapper.add(card, wrapperGbc); 
+
+        JScrollPane scroll = new JScrollPane(wrapper);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        
+        JPanel finalPanel = new JPanel(new BorderLayout());
+        finalPanel.add(scroll, BorderLayout.CENTER);
+        return finalPanel;
     }
 
     private void addLabelAndField(JPanel panel, String labelText, JComponent field, int row, int col, GridBagConstraints gbc, boolean full) {
@@ -490,7 +502,7 @@ public class UMAKSystemMain extends JFrame {
         
         gbc.gridy = row * 2;
         gbc.insets = new Insets(0, (col == 1 && !full) ? 20 : 0, 10, 0);
-        field.setPreferredSize(new Dimension(200, 40));
+        field.setMinimumSize(new Dimension(150, 40));
         panel.add(field, gbc);
     }
 

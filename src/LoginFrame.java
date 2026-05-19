@@ -49,12 +49,13 @@ public class LoginFrame extends JFrame {
     public LoginFrame() {
         setTitle("UMAK Lost & Found Inventory - Login");
         setSize(1000, 600);
+        setMinimumSize(new Dimension(800, 500));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
 
         mainCardPanel.add(createLoginView(), "login");
-        mainCardPanel.add(createRegisterView(), "register");
+        mainCardPanel.add(new JScrollPane(createRegisterView()) {{ setBorder(null); getVerticalScrollBar().setUnitIncrement(16); }}, "register");
 
         add(mainCardPanel);
     }
