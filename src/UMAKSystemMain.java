@@ -346,74 +346,91 @@ public class UMAKSystemMain extends JFrame {
         
         JPanel card = new JPanel(new GridBagLayout());
         card.setBackground(CARD_BG); 
-        card.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        card.setBorder(BorderFactory.createEmptyBorder(50, 60, 50, 60));
+        card.setPreferredSize(new Dimension(650, 950));
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
         JLabel title = new JLabel("Report Item");
-        title.setFont(new Font("SansSerif", Font.BOLD, 32));
+        title.setFont(new Font("Inter", Font.BOLD, 36));
+        title.setForeground(PRIMARY);
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        gbc.insets = new Insets(0, 0, 25, 0);
+        gbc.insets = new Insets(0, 0, 35, 0);
         card.add(title, gbc);
 
-        gbc.gridy = 2;
-        JTextField nameField = createTextField("Item Name");
-        addLabelAndField(card, "<html>Item Name <font color='red'>*</font></html>", nameField, 2, 0, gbc, true);
-
         gbc.gridy = 1;
-        JPanel statusPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        JPanel statusPanel = new JPanel(new GridLayout(1, 2, 15, 0));
         statusPanel.setOpaque(false);
         JRadioButton lostRadio = new JRadioButton("REPORT LOST", true);
         JRadioButton foundRadio = new JRadioButton("REPORT FOUND");
+        lostRadio.setFont(new Font("Inter", Font.BOLD, 12));
+        foundRadio.setFont(new Font("Inter", Font.BOLD, 12));
         ButtonGroup statusGroup = new ButtonGroup();
         statusGroup.add(lostRadio); statusGroup.add(foundRadio);
         statusPanel.add(lostRadio); statusPanel.add(foundRadio);
+        gbc.insets = new Insets(0, 0, 30, 0);
         card.add(statusPanel, gbc);
 
-        gbc.gridy = 4;
+        JTextField nameField = createTextField("Item Name");
+        addLabelAndField(card, "<html>Item Name <font color='red'>*</font></html>", nameField, 2, 0, gbc, true);
+
         JComboBox<String> catCombo = createComboBox(new String[]{"Select Category", "ID Card", "Electronics", "Wallet", "Documents", "Keys", "Bags", "Other"});
         addLabelAndField(card, "<html>Category <font color='red'>*</font></html>", catCombo, 3, 0, gbc, false);
         
         JSpinner dateSpinner = new JSpinner(new SpinnerDateModel());
         dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd"));
         dateSpinner.setValue(new java.util.Date());
+        dateSpinner.setBorder(BorderFactory.createLineBorder(OUTLINE));
         addLabelAndField(card, "<html>Date <font color='red'>*</font></html>", dateSpinner, 3, 1, gbc, false);
 
-        gbc.gridy = 6;
         JTextField timeField = createTextField("hh:mm (Optional)");
         addLabelAndField(card, "Time (Optional)", timeField, 4, 0, gbc, false);
         
         JTextField locField = createTextField("Location");
         addLabelAndField(card, "<html>Location <font color='red'>*</font></html>", locField, 4, 1, gbc, false);
 
-        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
-        gbc.insets = new Insets(15, 0, 5, 0);
-        card.add(new JLabel("Description") {{ setForeground(Color.GRAY); }}, gbc);
+        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2;
+        gbc.insets = new Insets(20, 0, 8, 0);
+        JLabel descLabel = new JLabel("Description");
+        descLabel.setForeground(new Color(71, 85, 105));
+        descLabel.setFont(new Font("Inter", Font.BOLD, 13));
+        card.add(descLabel, gbc);
 
         JTextArea descArea = new JTextArea(6, 20);
         addPlaceholder(descArea, "Provide more details about the item.");
         descArea.setLineWrap(true); descArea.setWrapStyleWord(true);
-        descArea.setBorder(BorderFactory.createLineBorder(OUTLINE));
-        gbc.gridy = 9; gbc.fill = GridBagConstraints.BOTH;
+        descArea.setFont(new Font("Inter", Font.PLAIN, 14));
+        descArea.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(OUTLINE),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        gbc.gridy = 10; gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 0.2;
+        gbc.insets = new Insets(0, 0, 20, 0);
         card.add(new JScrollPane(descArea), gbc);
 
-        gbc.gridy = 10; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weighty = 0;
-        gbc.insets = new Insets(20, 0, 10, 0);
-        card.add(new JLabel("Upload Photo") {{ setForeground(Color.GRAY); }}, gbc);
+        gbc.gridy = 11; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weighty = 0;
+        gbc.insets = new Insets(10, 0, 8, 0);
+        JLabel uploadHeader = new JLabel("Upload Photo");
+        uploadHeader.setForeground(new Color(71, 85, 105));
+        uploadHeader.setFont(new Font("Inter", Font.BOLD, 13));
+        card.add(uploadHeader, gbc);
 
         JLabel uploadLabel = new JLabel("Click to Upload Photo");
+        uploadLabel.setFont(new Font("Inter", Font.PLAIN, 14));
         JPanel uploadPanel = createUploadPanel(uploadLabel);
-        gbc.gridy = 11;
+        gbc.gridy = 12;
+        gbc.insets = new Insets(0, 0, 30, 0);
         card.add(uploadPanel, gbc);
         
         JButton submitBtn = new JButton("Submit Report");
         submitBtn.setBackground(PRIMARY);
         submitBtn.setForeground(Color.WHITE);
-        submitBtn.setFont(new Font("Inter", Font.BOLD, 16));
-        submitBtn.setPreferredSize(new Dimension(200, 50));
+        submitBtn.setFont(new Font("Inter", Font.BOLD, 18));
+        submitBtn.setPreferredSize(new Dimension(250, 55));
+        submitBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         submitBtn.addActionListener(e -> {
             String category = catCombo.getSelectedItem().toString();
@@ -473,13 +490,13 @@ public class UMAKSystemMain extends JFrame {
             } catch (Exception ex) { ex.printStackTrace(); }
         });
 
-        gbc.gridy = 12; gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = 13; gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(30, 0, 0, 0);
+        gbc.insets = new Insets(30, 0, 50, 0);
         card.add(submitBtn, gbc);
 
         GridBagConstraints wrapperGbc = new GridBagConstraints();
-        wrapperGbc.insets = new Insets(20, 20, 20, 20);
+        wrapperGbc.insets = new Insets(50, 50, 50, 50);
         wrapper.add(card, wrapperGbc); 
 
         JScrollPane scroll = new JScrollPane(wrapper);
@@ -494,18 +511,20 @@ public class UMAKSystemMain extends JFrame {
     private void addLabelAndField(JPanel panel, String labelText, JComponent field, int row, int col, GridBagConstraints gbc, boolean full) {
         if (full) { gbc.gridwidth = 2; gbc.weightx = 1.0; gbc.gridx = 0; } 
         else { gbc.gridwidth = 1; gbc.weightx = 0.5; gbc.gridx = col; }
-        
+
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridy = (row * 2) - 1;
-        gbc.insets = new Insets(10, (col == 1 && !full) ? 20 : 0, 2, 0);
-        panel.add(new JLabel(labelText) {{ setForeground(Color.GRAY); }}, gbc);
-        
+        gbc.insets = new Insets(12, (col == 1 && !full) ? 20 : 0, 5, 0);
+        JLabel label = new JLabel(labelText);
+        label.setForeground(new Color(71, 85, 105));
+        label.setFont(new Font("Inter", Font.BOLD, 13));
+        panel.add(label, gbc);
+
         gbc.gridy = row * 2;
-        gbc.insets = new Insets(0, (col == 1 && !full) ? 20 : 0, 10, 0);
-        field.setMinimumSize(new Dimension(150, 40));
+        gbc.insets = new Insets(0, (col == 1 && !full) ? 20 : 0, 15, 0);
+        field.setPreferredSize(new Dimension(field.getPreferredSize().width, 45));
         panel.add(field, gbc);
     }
-
     private void addPlaceholder(javax.swing.text.JTextComponent comp, String hint) {
         comp.setText(hint);
         comp.setForeground(Color.GRAY);
@@ -523,13 +542,20 @@ public class UMAKSystemMain extends JFrame {
 
     private JTextField createTextField(String hint) {
         JTextField tf = new JTextField();
-        tf.setBorder(BorderFactory.createLineBorder(OUTLINE));
+        tf.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(OUTLINE),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        tf.setFont(new Font("Inter", Font.PLAIN, 14));
         if (hint != null) addPlaceholder(tf, hint);
         return tf;
     }
 
     private JComboBox<String> createComboBox(String[] items) {
         JComboBox<String> cb = new JComboBox<>(items);
+        cb.setBackground(Color.WHITE);
+        cb.setFont(new Font("Inter", Font.PLAIN, 14));
+        cb.setBorder(BorderFactory.createLineBorder(OUTLINE));
         return cb;
     }
 
@@ -1074,7 +1100,7 @@ private JPanel createPrivacySecurity() {
 
     // Helper to show claim details (justification + image) matching dashboard style
     private void showClaimDetails(String path, String justification, String claimant, String item, String status) {
-        JDialog viewer = new JDialog(this, "Claim Details", true);
+        JDialog viewer = new JDialog(this, "Report Details", true);
         viewer.setSize(500, 750);
         viewer.setLocationRelativeTo(this);
         viewer.setLayout(new BorderLayout());
@@ -1083,7 +1109,7 @@ private JPanel createPrivacySecurity() {
         container.setBackground(CARD_BG);
         container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel typeTag = new JLabel("CLAIM", SwingConstants.CENTER);
+        JLabel typeTag = new JLabel("REPORT", SwingConstants.CENTER);
         typeTag.setOpaque(true);
         typeTag.setBackground(new Color(59, 130, 246));
         typeTag.setForeground(Color.WHITE);
@@ -1125,7 +1151,7 @@ private JPanel createPrivacySecurity() {
         JPanel details = new JPanel(new GridLayout(5, 2, 5, 5));
         details.setOpaque(false);
 
-        details.add(new JLabel("Claimant") {{ setFont(new Font("SansSerif", Font.BOLD, 12)); }});
+        details.add(new JLabel("User") {{ setFont(new Font("SansSerif", Font.BOLD, 12)); }});
         details.add(new JLabel(claimant));
         details.add(new JLabel("Item") {{ setFont(new Font("SansSerif", Font.BOLD, 12)); }});
         details.add(new JLabel(item));

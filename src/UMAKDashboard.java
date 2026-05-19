@@ -129,21 +129,21 @@ public class UMAKDashboard extends JPanel {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(cardColor);
         card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            BorderFactory.createEmptyBorder(2, 2, 4, 4)
+            BorderFactory.createLineBorder(new Color(226, 232, 240), 1),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
 
         JLabel picLabel = new JLabel("", SwingConstants.CENTER);
         picLabel.setPreferredSize(new Dimension(200, 180));
         picLabel.setOpaque(true);
-        picLabel.setBackground(cardColor);
+        picLabel.setBackground(new Color(248, 250, 252));
 
         File imgFile = DBConnection.resolveImagePath(path);
         if (imgFile != null && imgFile.exists()) {
             ImageIcon icon = new ImageIcon(imgFile.getAbsolutePath());
             Image img = icon.getImage();
             if (img.getWidth(null) > 0) {
-                double ratio = Math.min(200.0 / img.getWidth(null), 180.0 / img.getHeight(null));
+                double ratio = Math.min(220.0 / img.getWidth(null), 200.0 / img.getHeight(null));
                 picLabel.setIcon(new ImageIcon(img.getScaledInstance((int)(img.getWidth(null)*ratio), (int)(img.getHeight(null)*ratio), Image.SCALE_SMOOTH)));
             }
         } else {
@@ -153,10 +153,11 @@ public class UMAKDashboard extends JPanel {
 
         JLabel typeTag = new JLabel(itemType.toUpperCase(), SwingConstants.CENTER);
         typeTag.setOpaque(true);
-        typeTag.setFont(new Font("Inter", Font.BOLD, 10));
+        typeTag.setFont(new Font("Inter", Font.BOLD, 11));
         typeTag.setForeground(Color.WHITE);
         typeTag.setBackground(itemType.equalsIgnoreCase("Found") ? new Color(16, 185, 129) : new Color(249, 115, 22));
-        typeTag.setPreferredSize(new Dimension(65, 22));
+        typeTag.setPreferredSize(new Dimension(75, 26));
+        typeTag.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
 
         JPanel overlay = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         overlay.setOpaque(false);
@@ -439,37 +440,54 @@ class ItemDetailModal extends JDialog {
 class EditItemModal extends JDialog {
     public EditItemModal(JFrame parent, int itemId, String title, String category, String loc, String description, String status, String itemType, Color surfaceColor, Color cardColor, UMAKDashboard dashboard) {
         super(parent, "Edit Item", true);
-        setSize(450, 650);
+        setSize(500, 750);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(cardColor);
-        p.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        p.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL; c.weightx = 1; c.insets = new Insets(0, 0, 15, 0);
+        c.fill = GridBagConstraints.HORIZONTAL; c.weightx = 1; c.insets = new Insets(0, 0, 20, 0);
 
         JTextField titleF = new JTextField(title);
+        titleF.setPreferredSize(new Dimension(0, 45));
+        titleF.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)), BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        
         JComboBox<String> catC = new JComboBox<>(new String[]{"ID Card", "Electronics", "Wallet", "Documents", "Keys", "Bags", "Other"});
         catC.setSelectedItem(category);
+        catC.setPreferredSize(new Dimension(0, 45));
+        catC.setBackground(Color.WHITE);
+
         JTextField locF = new JTextField(loc);
+        locF.setPreferredSize(new Dimension(0, 45));
+        locF.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)), BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+
         JComboBox<String> statC = new JComboBox<>(new String[]{"Pending", "Approved", "Claimed", "Returned", "Denied"});
         statC.setSelectedItem(status);
+        statC.setPreferredSize(new Dimension(0, 45));
+        statC.setBackground(Color.WHITE);
+
         JTextArea descA = new JTextArea(description, 5, 20);
         descA.setLineWrap(true); descA.setWrapStyleWord(true);
+        descA.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         int row = 0;
         addEditField(p, "Item Title", titleF, c, row++);
         addEditField(p, "Category", catC, c, row++);
         addEditField(p, "Location", locF, c, row++);
         addEditField(p, "Status", statC, c, row++);
-        addEditField(p, "Description", new JScrollPane(descA), c, row++);
+        
+        JScrollPane descScroll = new JScrollPane(descA);
+        descScroll.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        addEditField(p, "Description", descScroll, c, row++);
 
         JButton save = new JButton("Save Changes");
         save.setBackground(new Color(59, 130, 246));
         save.setForeground(Color.WHITE);
-        save.setFont(new Font("Inter", Font.BOLD, 14));
-        save.setPreferredSize(new Dimension(0, 45));
+        save.setFont(new Font("Inter", Font.BOLD, 15));
+        save.setPreferredSize(new Dimension(0, 50));
+        save.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         save.addActionListener(e -> {
             if (titleF.getText().trim().isEmpty()) {
@@ -486,7 +504,7 @@ class EditItemModal extends JDialog {
             } catch (Exception ex) { ex.printStackTrace(); }
         });
 
-        c.gridy = row * 2; c.insets = new Insets(10, 0, 0, 0); p.add(save, c);
+        c.gridy = row * 2; c.insets = new Insets(20, 0, 0, 0); p.add(save, c);
         JScrollPane scroll = new JScrollPane(p);
         scroll.setBorder(null);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -496,11 +514,13 @@ class EditItemModal extends JDialog {
     private void addEditField(JPanel p, String label, JComponent f, GridBagConstraints c, int row) {
         c.gridy = row * 2;
         JLabel l = new JLabel(label);
-        l.setFont(new Font("Inter", Font.BOLD, 12));
-        l.setForeground(Color.GRAY);
+        l.setFont(new Font("Inter", Font.BOLD, 13));
+        l.setForeground(new Color(71, 85, 105));
+        c.insets = new Insets(0, 0, 5, 0);
         p.add(l, c);
 
         c.gridy = row * 2 + 1;
+        c.insets = new Insets(0, 0, 20, 0);
         p.add(f, c);
     }
 }
@@ -512,45 +532,56 @@ class ClaimModal extends JDialog {
 
     public ClaimModal(JFrame parent, int itemId, String itemType, UMAKDashboard dashboard) {
         super(parent, itemType.equalsIgnoreCase("Lost") ? "File a Report" : "File a Claim", true);
-        setSize(450, 500);
+        setSize(500, 650);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        p.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL; c.weightx = 1; c.insets = new Insets(0, 0, 15, 0);
 
-        JTextArea justA = new JTextArea(5, 20);
+        JTextArea justA = new JTextArea(6, 20);
         justA.setLineWrap(true); justA.setWrapStyleWord(true);
-        justA.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        justA.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        justA.setFont(new Font("Inter", Font.PLAIN, 14));
 
         int row = 0;
         addLabel(p, itemType.equalsIgnoreCase("Lost") ? "How/Where did you find this item?" : "Why does this belong to you? (Proof)", c, row++);
-        c.gridy = row++ * 2 - 1; p.add(new JScrollPane(justA), c);
+        c.gridy = row++ * 2 - 1; 
+        c.insets = new Insets(0, 0, 25, 0);
+        p.add(new JScrollPane(justA), c);
 
         addLabel(p, "Optional: Upload Image Proof", c, row++);
         JLabel uploadLabel = new JLabel("Click to select image", SwingConstants.CENTER);
-        uploadLabel.setBorder(BorderFactory.createDashedBorder(Color.GRAY, 3, 2));
-        uploadLabel.setPreferredSize(new Dimension(0, 80));
+        uploadLabel.setBorder(BorderFactory.createDashedBorder(new Color(148, 163, 184), 3, 2));
+        uploadLabel.setPreferredSize(new Dimension(0, 100));
         uploadLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        uploadLabel.setFont(new Font("Inter", Font.PLAIN, 13));
         uploadLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     selectedImage = chooser.getSelectedFile();
                     uploadLabel.setText(selectedImage.getName());
+                    uploadLabel.setBorder(BorderFactory.createLineBorder(new Color(16, 185, 129), 2));
                 }
             }
         });
-        c.gridy = row++ * 2 - 1; p.add(uploadLabel, c);
+        c.gridy = row++ * 2 - 1; 
+        c.insets = new Insets(0, 0, 30, 0);
+        p.add(uploadLabel, c);
 
         JButton submit = new JButton(itemType.equalsIgnoreCase("Lost") ? "Submit Report" : "Submit Claim");
         submit.setBackground(new Color(16, 185, 129));
         submit.setForeground(Color.WHITE);
-        submit.setFont(new Font("Inter", Font.BOLD, 14));
-        submit.setPreferredSize(new Dimension(300, 45));
+        submit.setFont(new Font("Inter", Font.BOLD, 16));
+        submit.setPreferredSize(new Dimension(300, 50));
+        submit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         submit.addActionListener(e -> {
             String justification = justA.getText().trim();
@@ -589,8 +620,8 @@ class ClaimModal extends JDialog {
             }
         });
 
-        c.gridy = 8; 
-        c.insets = new Insets(20, 0, 0, 0);
+        c.gridy = 10; 
+        c.insets = new Insets(10, 0, 0, 0);
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         p.add(submit, c);
@@ -603,8 +634,9 @@ class ClaimModal extends JDialog {
     private void addLabel(JPanel p, String text, GridBagConstraints c, int row) {
         c.gridy = row * 2;
         JLabel l = new JLabel(text);
-        l.setFont(new Font("Inter", Font.BOLD, 12));
-        l.setForeground(Color.GRAY);
+        l.setFont(new Font("Inter", Font.BOLD, 13));
+        l.setForeground(new Color(71, 85, 105));
+        c.insets = new Insets(0, 0, 8, 0);
         p.add(l, c);
     }
 }
@@ -616,57 +648,69 @@ class EditClaimModal extends JDialog {
 
     public EditClaimModal(JFrame parent, int claimId, int itemId, String itemType, String justification, String imagePath, UMAKDashboard dashboard) {
         super(parent, itemType.equalsIgnoreCase("Lost") ? "Edit or Cancel Report" : "Edit or Cancel Claim", true);
-        setSize(450, 550);
+        setSize(500, 650);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        p.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL; c.weightx = 1; c.insets = new Insets(0, 0, 15, 0);
 
-        JTextArea justA = new JTextArea(justification, 5, 20);
+        JTextArea justA = new JTextArea(justification, 6, 20);
         justA.setLineWrap(true); justA.setWrapStyleWord(true);
-        justA.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        justA.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        justA.setFont(new Font("Inter", Font.PLAIN, 14));
 
         int row = 0;
         addLabel(p, itemType.equalsIgnoreCase("Lost") ? "Update your report details:" : "Update your justification:", c, row++);
-        c.gridy = row++ * 2 - 1; p.add(new JScrollPane(justA), c);
+        c.gridy = row++ * 2 - 1; 
+        c.insets = new Insets(0, 0, 25, 0);
+        p.add(new JScrollPane(justA), c);
 
         addLabel(p, "Optional: Update Image Proof", c, row++);
         JLabel uploadLabel = new JLabel("Click to select new image", SwingConstants.CENTER);
         if (imagePath != null && !imagePath.isEmpty()) {
             uploadLabel.setText("Existing image saved. Click to change.");
         }
-        uploadLabel.setBorder(BorderFactory.createDashedBorder(Color.GRAY, 3, 2));
-        uploadLabel.setPreferredSize(new Dimension(0, 80));
+        uploadLabel.setBorder(BorderFactory.createDashedBorder(new Color(148, 163, 184), 3, 2));
+        uploadLabel.setPreferredSize(new Dimension(0, 100));
         uploadLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        uploadLabel.setFont(new Font("Inter", Font.PLAIN, 13));
         uploadLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     selectedImage = chooser.getSelectedFile();
                     uploadLabel.setText(selectedImage.getName());
+                    uploadLabel.setBorder(BorderFactory.createLineBorder(new Color(16, 185, 129), 2));
                 }
             }
         });
-        c.gridy = row++ * 2 - 1; p.add(uploadLabel, c);
+        c.gridy = row++ * 2 - 1; 
+        c.insets = new Insets(0, 0, 30, 0);
+        p.add(uploadLabel, c);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 15, 0));
         buttonPanel.setOpaque(false);
 
         JButton updateBtn = new JButton(itemType.equalsIgnoreCase("Lost") ? "Update Report" : "Update Claim");
         updateBtn.setBackground(new Color(59, 130, 246)); // Blue
         updateBtn.setForeground(Color.WHITE);
-        updateBtn.setFont(new Font("Inter", Font.BOLD, 14));
-        updateBtn.setPreferredSize(new Dimension(0, 45));
+        updateBtn.setFont(new Font("Inter", Font.BOLD, 15));
+        updateBtn.setPreferredSize(new Dimension(0, 50));
+        updateBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        JButton cancelBtn = new JButton(itemType.equalsIgnoreCase("Lost") ? "Cancel Report" : "Cancel Claim");
+        JButton cancelBtn = new JButton(itemType.equalsIgnoreCase("Lost") ? "Cancel" : "Cancel");
         cancelBtn.setBackground(new Color(239, 68, 68)); // Red
         cancelBtn.setForeground(Color.WHITE);
-        cancelBtn.setFont(new Font("Inter", Font.BOLD, 14));
-        cancelBtn.setPreferredSize(new Dimension(0, 45));
+        cancelBtn.setFont(new Font("Inter", Font.BOLD, 15));
+        cancelBtn.setPreferredSize(new Dimension(0, 50));
+        cancelBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         updateBtn.addActionListener(e -> {
             String newJustification = justA.getText().trim();
@@ -717,8 +761,8 @@ class EditClaimModal extends JDialog {
         buttonPanel.add(updateBtn);
         buttonPanel.add(cancelBtn);
 
-        c.gridy = 8; 
-        c.insets = new Insets(20, 0, 0, 0);
+        c.gridy = 10; 
+        c.insets = new Insets(10, 0, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         p.add(buttonPanel, c);
         
@@ -730,8 +774,9 @@ class EditClaimModal extends JDialog {
     private void addLabel(JPanel p, String text, GridBagConstraints c, int row) {
         c.gridy = row * 2;
         JLabel l = new JLabel(text);
-        l.setFont(new Font("Inter", Font.BOLD, 12));
-        l.setForeground(Color.GRAY);
+        l.setFont(new Font("Inter", Font.BOLD, 13));
+        l.setForeground(new Color(71, 85, 105));
+        c.insets = new Insets(0, 0, 8, 0);
         p.add(l, c);
     }
 }
