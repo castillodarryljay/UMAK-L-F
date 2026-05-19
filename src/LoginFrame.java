@@ -158,26 +158,26 @@ public class LoginFrame extends JFrame {
         gbc.gridwidth = 2;
         
         gbc.gridy = 1; rightPanel.add(new JLabel("<html>Full Name: <font color='red'>*</font></html>"), gbc);
-        gbc.gridy = 2; regName.setPreferredSize(new Dimension(300, 35)); rightPanel.add(regName, gbc);
+        gbc.gridy = 2; regName.setPreferredSize(new Dimension(350, 40)); rightPanel.add(regName, gbc);
         
         gbc.gridy = 3; rightPanel.add(new JLabel("<html>Student Number: <font color='red'>*</font></html>"), gbc);
-        gbc.gridy = 4; regID.setPreferredSize(new Dimension(300, 35)); rightPanel.add(regID, gbc);
+        gbc.gridy = 4; regID.setPreferredSize(new Dimension(350, 40)); rightPanel.add(regID, gbc);
         
         gbc.gridy = 5; rightPanel.add(new JLabel("<html>Department: <font color='red'>*</font></html>"), gbc);
-        gbc.gridy = 6; regDept.setPreferredSize(new Dimension(300, 35)); rightPanel.add(regDept, gbc);
+        gbc.gridy = 6; regDept.setPreferredSize(new Dimension(350, 40)); rightPanel.add(regDept, gbc);
 
         gbc.gridy = 7; rightPanel.add(new JLabel("<html>Email: <font color='red'>*</font></html>"), gbc);
-        gbc.gridy = 8; regEmail.setPreferredSize(new Dimension(300, 35)); rightPanel.add(regEmail, gbc);
+        gbc.gridy = 8; regEmail.setPreferredSize(new Dimension(350, 40)); rightPanel.add(regEmail, gbc);
         
         gbc.gridy = 9; rightPanel.add(new JLabel("<html>Password: <font color='red'>*</font></html>"), gbc);
         gbc.gridy = 10; 
-        regPass.setPreferredSize(new Dimension(300, 35));
+        regPass.setPreferredSize(new Dimension(350, 40));
         addPasswordToggle(regPass);
         rightPanel.add(regPass, gbc);
 
         gbc.gridy = 11; rightPanel.add(new JLabel("<html>Confirm Password: <font color='red'>*</font></html>"), gbc);
         gbc.gridy = 12;
-        regConfirmPass.setPreferredSize(new Dimension(300, 35));
+        regConfirmPass.setPreferredSize(new Dimension(350, 40));
         addPasswordToggle(regConfirmPass);
         rightPanel.add(regConfirmPass, gbc);
 
@@ -340,8 +340,15 @@ public class LoginFrame extends JFrame {
 
     // Registers a new student account
     private void handleRegister() {
-        if(regName.getText().isEmpty() || regID.getText().isEmpty() || regEmail.getText().isEmpty() || regDept.getSelectedIndex() == 0) {
+        String email = regEmail.getText().trim();
+        if(regName.getText().isEmpty() || regID.getText().isEmpty() || email.isEmpty() || regDept.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(this, "Please fill out all fields and select a department");
+            return;
+        }
+
+        // Email format validation
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid email address (e.g., name@email.com)", "Invalid Email", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
